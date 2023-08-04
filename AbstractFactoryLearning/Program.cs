@@ -13,10 +13,14 @@ namespace AbstractFactoryLearning
             Chief baker = new Chief(new BakerFactory());
             baker.GetNameOfMeal();
             baker.Cook();
+            baker.GetPlaceOfWork();
+
+            Console.WriteLine(new string ('-',25));
 
             Chief butcher = new Chief(new ButcherFactory());
             butcher.GetNameOfMeal();
             butcher.Cook();
+            butcher.GetPlaceOfWork();
 
 
         }
@@ -24,7 +28,7 @@ namespace AbstractFactoryLearning
 
     abstract class Meal
     {
-        public abstract void GiveNameOfMeal();
+        public abstract void NameMeal();
     }
 
     abstract class CookingProcess
@@ -32,9 +36,14 @@ namespace AbstractFactoryLearning
         public abstract void Cooking();
     }
 
+    abstract class PlaceOfWork
+    {
+        public abstract void NamePlace();
+    }
+
     class BreadMeal : Meal
     { 
-        public override void GiveNameOfMeal()
+        public override void NameMeal()
         {
             Console.WriteLine("You make bread");
         }
@@ -42,7 +51,7 @@ namespace AbstractFactoryLearning
 
     class MeatMeal : Meal
     {
-        public override void GiveNameOfMeal()
+        public override void NameMeal()
         {
             Console.WriteLine("You make stake");
         }
@@ -64,11 +73,30 @@ namespace AbstractFactoryLearning
         }
     }
 
+    class BakeryPlaceOfWork : PlaceOfWork
+    {
+        public override void NamePlace()
+        {
+            Console.WriteLine("I am working in bakery");
+        }
+    }
+    
+    class StakeHousePlaceOfWork : PlaceOfWork
+    {
+        public override void NamePlace()
+        {
+            Console.WriteLine("I am working in stakehouse");
+        }
+    }
+
     abstract class ChiefFactory
     {
         public abstract Meal CreateMeal();
         public abstract CookingProcess CreateCookingProcess();
+
+        public abstract PlaceOfWork CreatePlaceOfWork();
     }
+
 
 
     class BakerFactory : ChiefFactory
@@ -84,6 +112,10 @@ namespace AbstractFactoryLearning
             return new BakingProcess();
         }
 
+        public override PlaceOfWork CreatePlaceOfWork()
+        {
+            return new BakeryPlaceOfWork();
+        }
     }
 
     class ButcherFactory : ChiefFactory
@@ -97,28 +129,40 @@ namespace AbstractFactoryLearning
         {
             return new FryingProcess();
         }
+
+        public override PlaceOfWork CreatePlaceOfWork()
+        {
+            return new StakeHousePlaceOfWork();
+        }
     }
 
     class Chief
     {
         private Meal _meal;
         private CookingProcess _cookingProcess;
+        private PlaceOfWork _placeOfWork;   
 
         public Chief( ChiefFactory chiefFactory )
         {
             
             _meal = chiefFactory.CreateMeal();
-            _cookingProcess = chiefFactory.CreateCookingProcess();  
+            _cookingProcess = chiefFactory.CreateCookingProcess();
+            _placeOfWork = chiefFactory.CreatePlaceOfWork();
         }
 
         public void GetNameOfMeal()
         {
-            _meal.GiveNameOfMeal();
+            _meal.NameMeal();
         }
 
         public void Cook()
         {
             _cookingProcess.Cooking();
+        }
+
+        public void GetPlaceOfWork()
+        {
+            _placeOfWork.NamePlace();
         }
     }
 }
